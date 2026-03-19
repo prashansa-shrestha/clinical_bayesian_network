@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 
 from collections import deque
-
+from domain import DOMAINS
 
 class BayesNetStructure:
     """
@@ -23,23 +23,25 @@ class BayesNetStructure:
         """
         # 1. Variable Domains: Defined states for each discrete node.
         # These keys serve as the global 'Source of Truth' for the project.
-        self.domains = {
-            "Age":            ["young", "middle", "senior"],
-            "Sex":            [0, 1],
-            "Slope":          [1, 2, 3],
-            "Thal":           [3, 6, 7],
-            "FastingBS":      [0, 1],
-            "BloodPressure":  ["low", "medium", "high"],
-            "Cholesterol":    ["low", "medium", "high"],
-            "HeartDisease":   [0, 1],
-            "Cp":             [1, 2, 3, 4],
-            "RestingECG":     [0, 1, 2],
-            "Thalach":        ["low", "medium", "high"],
-            "ExerciseAngina": [0, 1],
-            "Oldpeak":        ["low", "high"],
-            "Ca":             [0, 1, 2, 3]
-        }
+        self.domains = DOMAINS
         self.nodes = list(self.domains.keys())
+        # self.domains = {
+        #     "Age":            ["young", "middle", "senior"],
+        #     "Sex":            [0, 1],
+        #     "Slope":          [1, 2, 3],
+        #     "Thal":           [3, 6, 7],
+        #     "FastingBS":      [0, 1],
+        #     "BloodPressure":  ["low", "medium", "high"],
+        #     "Cholesterol":    ["low", "medium", "high"],
+        #     "HeartDisease":   [0, 1],
+        #     "Cp":             [1, 2, 3, 4],
+        #     "RestingECG":     [0, 1, 2],
+        #     "Thalach":        ["low", "medium", "high"],
+        #     "ExerciseAngina": [0, 1],
+        #     "Oldpeak":        ["low", "high"],
+        #     "Ca":             [0, 1, 2, 3]
+        # }
+        # self.nodes = list(self.domains.keys())
 
         # 2. Causal Adjacency List: { Child: [Parents] }
         # The structure follows a 'Waterfall' clinical model:
