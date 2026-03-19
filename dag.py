@@ -1,13 +1,28 @@
 # dag.py
-# Implements: BayesNetStructure, get_parents, topological_sort, check_for_cycles
+# -----------------------------------------------------------------------------
+# Project: Clinical Bayesian Network for Heart Disease Prediction
+# Role: Member 1 - System Architect
+# Implements: Bayesian Network Structure (DAG), Cycle Detection, and Topological Sorting
+# -----------------------------------------------------------------------------
 
 from collections import deque
-from inspect import stack
 
 
 class BayesNetStructure:
+    """
+    Defines the structural properties of the Bayesian Network.
+
+    This class manages the Directed Acyclic Graph (DAG) representing causal
+    relationships between clinical features and heart disease. It provides
+    utilities for graph validation and sequence ordering for inference.
+    """
+
     def __init__(self):
-        # 1. Domains (Shared Contract with Team)
+        """
+        Initializes the network with standardized domains and causal structures.
+        """
+        # 1. Variable Domains: Defined states for each discrete node.
+        # These keys serve as the global 'Source of Truth' for the project.
         self.domains = {
             "Age":            ["young", "middle", "senior"],
             "Sex":            [0, 1],
@@ -26,7 +41,9 @@ class BayesNetStructure:
         }
         self.nodes = list(self.domains.keys())
 
-        # 2. Causality Structure (The "Waterfall" Model)
+        # 2. Causal Adjacency List: { Child: [Parents] }
+        # The structure follows a 'Waterfall' clinical model:
+        # Demographics -> Bio-markers -> Disease -> Symptoms/Tests
         self.structure = {
             "Age":            [],
             "Sex":            [],
@@ -44,18 +61,40 @@ class BayesNetStructure:
             "Ca":             ["HeartDisease"]
         }
 
-    def get_parents(self, node):
+    def get_parents(self, node: str) -> list:
+        """
+        Retrieves the parent nodes for a given child node.
+
+        Args:
+            node (str): The name of the variable.
+            Returns:
+                list: A list of immediate causal parent names.
+                """
         return self.structure.get(node, [])
 
-    def topological_sort(self):
-        """Returns a valid ordering of nodes for Member 2's engine."""
+    def topological_sort(self) -> list:
+        """
+        Computes a linear ordering of nodes using Kahn's Algorithm.
+
+        This ordering ensures that parents are processed before their children,
+        which is a requirement for the Variable Elimination algorithm.
+
+        Returns:
+            list: A list of node names in topological order.
+            """
+        # Compute in-degrees (number of parents) for each node
         in_degree = {node: len(self.get_parents(node)) for node in self.nodes}
-        queue = deque([node for node in self.nodes if in_degree[node] == 0])
+
+        # Initialize queue with root nodes (those with no parents)
+        queue = deque(
+            [node for node in self.nodes if in_degree[node] == 0])
         sorted_list = []
 
         while queue:
             current = queue.popleft()
             sorted_list.append(current)
+
+            # Reduce in-degree for children and add to queue if they become roots
             for child in self.nodes:
                 if current in self.get_parents(child):
                     in_degree[child] -= 1
@@ -65,42 +104,48 @@ class BayesNetStructure:
         return sorted_list
 
     def check_for_cycles(self) -> bool:
-        """Uses DFS to ensure the graph is a Directed Acyclic Graph (DAG)."""
+        """
+        Validates the graph's acyclic property using Depth First Search (DFS).
+
+        Returns:
+            bool: True if the graph is a valid DAG (no cycles), False otherwise.
+            """
         visited = set()
         stack = set()
 
-
         def visit(node):
             if node in stack:
-                return True  # Cycle detected
+                return True  # Cycle detected via back-edge
             if node in visited:
                 return False
 
             visited.add(node)
             stack.add(node)
 
-            # Check all parents of this node
+            # Recursive check through all parental lineages
             for parent in self.get_parents(node):
                 if visit(parent):
                     return True
 
-            stack.remove(node)  # Backtrack
+            stack.remove(node)  # Backtrack: remove from current path
             return False
 
+        # Iterate through all nodes to ensure disconnected components are checked
         for n in self.nodes:
             if n not in visited:
                 if visit(n):
-                    return False  # Found a cycle
-        return True  # No cycles found
-
-
+                    return False  # Cycle found in the graph
+        return True
+# -----------------------------------------------------------------------------
+# Unit Testing / Validation
+# -----------------------------------------------------------------------------
 if __name__ == "__main__":
     dag = BayesNetStructure()
     print("=== Architect's DAG Validation ===")
 
     if dag.check_for_cycles():
-        print(" Graph Check: Valid DAG (No Cycles).")
+        print(" [STATUS] Graph Check: Valid DAG (No Cycles detected).")
         order = dag.topological_sort()
-        print(f" Sorting Check: {order}")
+        print(f" [STATUS] Sorting Check: {order}")
     else:
-        print(" Graph Check: Cycle Detected!")
+        print(" [ERROR] Graph Check: Cycle Detected! Structure is invalid.")
