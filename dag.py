@@ -47,20 +47,26 @@ class BayesNetStructure:
         # The structure follows a 'Waterfall' clinical model:
         # Demographics -> Bio-markers -> Disease -> Symptoms/Tests
         self.structure = {
-            "Age":            [],
-            "Sex":            [],
-            "Slope":          [],
-            "Thal":           [],
-            "FastingBS":      ["Age"],
-            "BloodPressure":  ["Age", "Sex"],
-            "Cholesterol":    ["Age", "Sex"],
-            "HeartDisease":   ["Age", "Sex", "BloodPressure", "Cholesterol", "FastingBS"],
-            "Cp":             ["HeartDisease"],
-            "RestingECG":     ["HeartDisease"],
-            "Thalach":        ["HeartDisease"],
+            "Age": [],
+            "Sex": [],
+            "Cholesterol": ["Age"], # Age influences Cholesterol
+            "BloodPressure": ["Age"], # Age influences BP
+            "FastingBS": ["Age"],
+            
+            # Reduce parents to the most 'stable' causes to avoid overfitting
+            "HeartDisease": ["Age", "Sex", "Cholesterol", "BloodPressure"], 
+            
+            # Connect the 'Orphans' to their clinical outcomes
+            "Slope": ["HeartDisease"], 
+            "Thal": ["HeartDisease"],
+            
+            # Symptoms stay as children
+            "Cp": ["HeartDisease"],
+            "RestingECG": ["HeartDisease"],
+            "Thalach": ["HeartDisease", "Age"], # Age also affects max heart rate
             "ExerciseAngina": ["HeartDisease"],
-            "Oldpeak":        ["HeartDisease", "Slope"],
-            "Ca":             ["HeartDisease"]
+            "Oldpeak": ["HeartDisease", "Slope"],
+            "Ca": ["HeartDisease"]
         }
 
     def get_parents(self, node: str) -> list:
@@ -138,6 +144,16 @@ class BayesNetStructure:
                 if visit(n):
                     return False  # Cycle found in the graph
         return True
+
+    def pretty_print(self):
+        """Prints a human-readable edge list for the DAG."""
+        print("=== Bayesian Network Structure ===")
+        for child, parents in self.structure.items():
+            if not parents:
+                continue
+            for p in parents:
+                print(f"{p} -> {child}")
+
 # -----------------------------------------------------------------------------
 # Unit Testing / Validation
 # -----------------------------------------------------------------------------
