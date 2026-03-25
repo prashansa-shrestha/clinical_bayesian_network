@@ -1,9 +1,9 @@
-from data_pipeline import load_data, train_test_split, DataPipeline, evaluate
-from inference_engine import variable_elimination
+from src.data_pipeline import load_data, train_test_split, DataPipeline, evaluate
+from src.inference_engine import variable_elimination
 
 def main():
     # 1. Load and preprocess (Member 3)
-    data = load_data("heart.csv")
+    data = load_data("data/heart.csv")
     train_data, test_data = train_test_split(data, test_ratio=0.2, seed=123)
 
     # 2. Setup Pipeline and Fit CPTs (Integration of all Members)

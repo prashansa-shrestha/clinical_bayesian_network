@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 
 from collections import deque
-from domain import DOMAINS
+from .domain import DOMAINS
 
 class BayesNetStructure:
     """
