@@ -3,9 +3,9 @@ import random
 import math
 from itertools import product as cartesian_product
 
-from domain import DOMAINS
-from dag import BayesNetStructure
-from inference_engine import Factor, variable_elimination
+from .domain import DOMAINS
+from .dag import BayesNetStructure
+from .inference_engine import Factor, variable_elimination
 
 import matplotlib.pyplot as plt
 

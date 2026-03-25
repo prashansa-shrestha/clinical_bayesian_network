@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import graphviz
 from main import DataPipeline, variable_elimination, load_data, train_test_split, evaluate
-from dag import BayesNetStructure
-from domain import DOMAINS
+from src.dag import BayesNetStructure
+from src.domain import DOMAINS
 
 # 1. Page Configuration
 st.set_page_config(page_title="Heart Disease AI Predictor", layout="wide")
@@ -22,10 +22,9 @@ st.markdown("""
 # --- Initialize Data & Model ---
 @st.cache_resource
 def initialize_system():
-    # 1. Load raw data
-    raw_list = load_data("heart.csv") 
+    # 1. Update the path to include the 'data/' folder
+    raw_list = load_data("data/heart.csv") 
     df = pd.DataFrame(raw_list)
-    
     # 2. Split data
     train_data, test_data = train_test_split(raw_list, test_ratio=0.2, seed=123)
     
