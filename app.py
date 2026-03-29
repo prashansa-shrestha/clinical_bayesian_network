@@ -1,7 +1,14 @@
 import streamlit as st
 import pandas as pd
 import graphviz
-from main import DataPipeline, variable_elimination, load_data, train_test_split, evaluate
+import sys
+import os
+
+# Add the project root to the path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from src.data_pipeline import load_data, train_test_split, DataPipeline, evaluate
+from src.inference_engine import variable_elimination
 from src.dag import BayesNetStructure
 from src.domain import DOMAINS
 
