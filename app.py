@@ -89,7 +89,7 @@ with tabs[0]:
             
     with col2:
         st.write("**Active Evidence Summary**")
-        evidence_data = [{"Clinical Variable": k, "Selected Value": v} for k, v in user_evidence.items()]
+        evidence_data = [{"Clinical Variable": variable_labels[k], "Selected Value": v} for k, v in user_evidence.items()]
         st.table(pd.DataFrame(evidence_data))
 
 # --- TAB 2: Project Details ---
