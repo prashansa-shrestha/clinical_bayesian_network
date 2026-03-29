@@ -50,8 +50,20 @@ pipeline, cpts, metrics, df_raw, bn_structure = initialize_system()
 # --- Sidebar ---
 st.sidebar.header("Patient Clinical Profile")
 user_evidence = {}
+
+# Map technical variable names to user-friendly display names
+variable_labels = {
+    "Age": "Age Group",
+    "Sex": "Sex",
+    "Cholesterol": "Cholesterol Level",
+    "BloodPressure": "Blood Pressure",
+    "Thalach": "Max Heart Rate Achieved",
+    "Cp": "Chest Pain Type",
+    "ExerciseAngina": "Chest Pain after Exercise"
+}
+
 for var in ["Age", "Sex", "Cholesterol", "BloodPressure", "Thalach", "Cp", "ExerciseAngina"]:
-    user_evidence[var] = st.sidebar.selectbox(f"{var}", DOMAINS[var])
+    user_evidence[var] = st.sidebar.selectbox(variable_labels[var], DOMAINS[var])
 
 # --- Main UI ---
 st.title("Clinical Bayesian Network")

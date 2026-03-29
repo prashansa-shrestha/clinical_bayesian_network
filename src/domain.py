@@ -6,17 +6,17 @@
 
 DOMAINS = {
     "Age":            ["young", "middle", "senior"],
-    "Sex":            [0, 1],
+    "Sex":            ["female", "male"],
     "Slope":          [1, 2, 3],
     "Thal":           [3, 6, 7],
     "FastingBS":      [0, 1],
     "BloodPressure":  ["low", "medium", "high"],
     "Cholesterol":    ["low", "medium", "high"],
     "HeartDisease":   [0, 1],
-    "Cp":             [1, 2, 3, 4],
+    "Chest Pain Type":             ["Typical Angina", "Atypical Angina", "Non-anginal Pain", "Asymptomatic"],
     "RestingECG":     [0, 1, 2],
-    "Thalach":        ["low", "medium", "high"],
-    "ExerciseAngina": [0, 1],
+    "Max Heart Rate Achieved":        ["low", "medium", "high"],
+    "Chest Pain after Exercise": ["Yes", "No"],
     "Oldpeak":        ["low", "high"],
     "Ca":             [0, 1, 2, 3]
 }
