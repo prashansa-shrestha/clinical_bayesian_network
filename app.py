@@ -1,14 +1,7 @@
 import streamlit as st
 import pandas as pd
 import graphviz
-import sys
-import os
-
-# Add the project root to the path for imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from src.data_pipeline import load_data, train_test_split, DataPipeline, evaluate
-from src.inference_engine import variable_elimination
+from main import DataPipeline, variable_elimination, load_data, train_test_split, evaluate
 from src.dag import BayesNetStructure
 from src.domain import DOMAINS
 
@@ -96,7 +89,7 @@ with tabs[0]:
             
     with col2:
         st.write("**Active Evidence Summary**")
-        evidence_data = [{"Clinical Variable": variable_labels[k], "Selected Value": v} for k, v in user_evidence.items()]
+        evidence_data = [{"Clinical Variable": k, "Selected Value": v} for k, v in user_evidence.items()]
         st.table(pd.DataFrame(evidence_data))
 
 # --- TAB 2: Project Details ---
