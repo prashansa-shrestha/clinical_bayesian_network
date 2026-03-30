@@ -1,4 +1,4 @@
-# inference_engine.py
+
 # Implements: Factor, pointwise_product, marginalize, variable_elimination, normalize
 
 from itertools import product as cartesian_product
