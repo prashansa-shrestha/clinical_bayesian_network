@@ -50,8 +50,22 @@ pipeline, cpts, metrics, df_raw, bn_structure = initialize_system()
 # --- Sidebar ---
 st.sidebar.header("Patient Clinical Profile")
 user_evidence = {}
+cp_map = {0: "Typical Angina", 1: "Atypical Angina", 2: "Non-Anginal Pain", 3: "Asymptomatic"}
+sex_map = {0: "Female", 1: "Male"}
+
 for var in ["Age", "Sex", "Cholesterol", "BloodPressure", "Thalach", "Cp", "ExerciseAngina"]:
-    user_evidence[var] = st.sidebar.selectbox(f"{var}", DOMAINS[var])
+    if var == "Sex":
+        sex_display = [sex_map[val] for val in DOMAINS["Sex"]]
+        selected_sex = st.sidebar.selectbox("Sex", sex_display)
+        inv_sex_map = {v: k for k, v in sex_map.items()}
+        user_evidence["Sex"] = inv_sex_map[selected_sex]
+    elif var == "Cp":
+        cp_display = [cp_map.get(val, str(val)) for val in DOMAINS["Cp"]]
+        selected_cp = st.sidebar.selectbox("Chest Pain Type", cp_display)
+        inv_cp_map = {v: k for k, v in cp_map.items()}
+        user_evidence["Cp"] = inv_cp_map[selected_cp]
+    else:
+        user_evidence[var] = st.sidebar.selectbox(f"{var}", DOMAINS[var])
 
 # --- Main UI ---
 st.title("Clinical Bayesian Network")
@@ -77,7 +91,16 @@ with tabs[0]:
             
     with col2:
         st.write("**Active Evidence Summary**")
-        evidence_data = [{"Clinical Variable": k, "Selected Value": v} for k, v in user_evidence.items()]
+        # Map Sex value to string for display
+        evidence_data = []
+        for k, v in user_evidence.items():
+            if k == "Sex":
+                v_disp = sex_map.get(v, str(v))
+            elif k == "Cp":
+                v_disp = cp_map.get(v, str(v))
+            else:
+                v_disp = v
+            evidence_data.append({"Clinical Variable": k if k != "Cp" else "Chest Pain Type", "Selected Value": v_disp})
         st.table(pd.DataFrame(evidence_data))
 
 # --- TAB 2: Project Details ---
