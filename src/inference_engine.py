@@ -222,7 +222,7 @@ def variable_elimination(
         4. Multiply remaining factors.
         5. Normalize.
     """
-    # Step 1: Initialize factor pool from CPTs
+    # Initialize factor pool from CPTs
     factors = []
     for var_name, cpt in cpts.items():
         if isinstance(cpt, Factor):
@@ -230,12 +230,12 @@ def variable_elimination(
         else:
             raise TypeError(f"CPT for '{var_name}' must be a Factor instance.")
 
-    # Step 2: Apply evidence restrictions
+    # Apply evidence restrictions
     factors = [restrict(f, evidence) for f in factors]
     # Remove degenerate factors (empty scope / scalar) if needed
     factors = [f for f in factors if f.table]
 
-    # Step 3: Determine hidden variables
+    # Determine hidden variables
     all_vars = set(domains.keys())
     observed = set(evidence.keys())
     hidden_vars = all_vars - {target} - observed
@@ -243,7 +243,7 @@ def variable_elimination(
     if elimination_order is None:
         elimination_order = list(hidden_vars)
 
-    # Step 4: Eliminate hidden variables one by one
+    #  Eliminate hidden variables one by one
     for h_var in elimination_order:
         if h_var not in hidden_vars:
             continue  # Skip if already eliminated or not applicable
@@ -266,7 +266,7 @@ def variable_elimination(
         # Return new factor to the pool
         factors = irrelevant + [summed_out]
 
-    # Step 5: Multiply all remaining factors
+    # Multiply all remaining factors
     if not factors:
         raise RuntimeError("No factors remaining after elimination.")
 
@@ -279,5 +279,5 @@ def variable_elimination(
     for v in non_target:
         result = marginalize(result, v)
 
-    # Step 6: Normalize
+    # Normalize
     return normalize(result)
